@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DIO.Series.Intefaces;
-
+using DIO.Series.Interfaces;
 
 namespace DIO.Series
 {
@@ -26,6 +22,8 @@ namespace DIO.Series
 		{
 			listaSerie.Add(entidade);
 		}
+
+
 
 		public List<Serie> Lista()
 		{
