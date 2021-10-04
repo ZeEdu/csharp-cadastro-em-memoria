@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Dio.Series.Classes;
 using DIO.Series.Classes;
 
 
@@ -8,63 +11,69 @@ namespace DIO.Series
 {
 	class Program
 	{
-		static MovieRepo movieRepo = new MovieRepo();
-		static readonly HttpClient httpClient = new HttpClient();
+		static readonly MovieRepo movieRepo = new();
+		static readonly HttpClient httpClient = new();
 
 		// static SerieRepositorio repositorio = new SerieRepositorio();
 		static async Task Main(string[] args)
-		{
+        {
+            await LoadMovies();
 
+            string opcaoUsuario = ObterOpcaoUsuario();
+
+
+            while (opcaoUsuario.ToUpper() != "X")
+            {
+                switch (opcaoUsuario)
+                {
+                    case "1":
+                        ListarFilmes();
+                        break;
+                    case "2":
+                        InserirFilme();
+                        break;
+                    case "3":
+                        AtualizarFilme();
+                        break;
+                    case "4":
+                        ExcluirFilme();
+                        break;
+                    case "5":
+                        VisualizarFilme();
+                        break;
+                    case "C":
+                        Console.Clear();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                opcaoUsuario = ObterOpcaoUsuario();
+            }
+            Console.WriteLine("Obrigado por utilizar nossos serviços");
+        }
+
+        private static async Task LoadMovies()
+        {
             try
             {
-				HttpResponseMessage response = await httpClient.GetAsync("https://imdb-api.com/en/API/MostPopularMovies/k_f1wugarq");
-				response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-				Console.WriteLine(responseBody);
+                var responseStream = httpClient.GetStreamAsync("https://imdb-api.com/en/API/MostPopularMovies/k_f1wugarq");
+                var movies = await JsonSerializer.DeserializeAsync<GetMovies>(await responseStream);
 
-            }
+                foreach (var movie in movies.Items)
+                {
+					Movie newMovie = new(id: movie.Id, title: movie.Title, fullTitle: movie.FullTitle, year: movie.Year, crew: movie.Crew);
+					movieRepo.Insert(newMovie);
+                }
+
+			}
             catch (HttpRequestException e)
             {
-
-                throw;
+                Console.WriteLine("\nException Caught!");
+				Console.WriteLine("Message: {0}", e.Message);
             }
+        }
 
-
-
-			string opcaoUsuario = ObterOpcaoUsuario();
-
-
-			while (opcaoUsuario.ToUpper() != "X")
-			{
-				switch (opcaoUsuario)
-				{
-					case "1":
-						ListarFilmes();
-						break;
-					case "2":
-						InserirFilme();
-						break;
-					case "3":
-						AtualizarFilme();
-						break;
-					case "4":
-						ExcluirFilme();
-						break;
-					case "5":
-						VisualizarFilme();
-						break;
-					case "C":
-						Console.Clear();
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-				opcaoUsuario = ObterOpcaoUsuario();
-			}
-			Console.WriteLine("Obrigado por utilizar nossos serviços");
-		}
-
-		private static void VisualizarFilme()
+        private static void VisualizarFilme()
 		{
 			System.Console.WriteLine("Digite o id do filme: ");
 			string indiceSerie = Console.ReadLine().ToLower();
@@ -91,12 +100,12 @@ namespace DIO.Series
 			string inputFullTitle = Console.ReadLine();
 
 			System.Console.WriteLine("Digite o ano do filme");
-			int inputYear = int.Parse(Console.ReadLine());
+			string inputYear = Console.ReadLine();
 
 			System.Console.WriteLine("Digite a equipe do filme");
 			string inputCrew = Console.ReadLine();
 
-			Movie updatedMovie = new Movie(id: movieId, 
+			Movie updatedMovie = new(id: movieId, 
 				title: inputTitle, 
 				fullTitle: inputFullTitle, 
 				year: inputYear, 
@@ -133,13 +142,13 @@ namespace DIO.Series
 			string inputFullTitle = Console.ReadLine();
 
 			System.Console.WriteLine("Digite o ano do filme");
-			int inputYear = int.Parse(Console.ReadLine());
+			string inputYear = Console.ReadLine();
 
 			System.Console.WriteLine("Digite a equipe do filme");
 			string inputCrew = Console.ReadLine();
 
 
-			Movie newMovie = new Movie(id: Helper.RandomString(8), title: inputTitle, fullTitle: inputFullTitle, year: inputYear,crew: inputCrew);
+			Movie newMovie = new(id: Helper.RandomString(8), title: inputTitle, fullTitle: inputFullTitle, year: inputYear,crew: inputCrew);
 			movieRepo.Insert(newMovie);
 		}
 

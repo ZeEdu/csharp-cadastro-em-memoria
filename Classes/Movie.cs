@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace DIO.Series.Classes
 {
@@ -7,11 +8,11 @@ namespace DIO.Series.Classes
 		public string Id { get; set; }
 		public string Title { get; set; }
 		public string FullTitle { get; set; }
-		public long Year { get; set; }
+		public string Year { get; set; }
 		public string Crew { get; set; }
-		public bool Deleted { get; set; }
+        public bool Deleted { get; set; }
 
-		public Movie(string id, string title, string fullTitle, long year, string crew)
+        public Movie(string id, string title, string fullTitle, string year, string crew)
 		{
 			Id = id;
 			Title = title;
