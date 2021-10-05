@@ -9,15 +9,10 @@ namespace DIO.Series.Interfaces
 	interface IMoviesRepo<T>
 	{
 		List<T> ListMovies();
-
 		T ReturnById(string id);
-
 		void Insert(T entity);
-
 		void BulkInsert(List<T> entityList);
-
 		void Delete(string id);
-
 		void Update(string id, T entity);
 
 	}

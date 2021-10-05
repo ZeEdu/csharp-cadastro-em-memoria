@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace Dio.Series.Classes
 {
-
     public partial class GetMovies
     {
         [JsonPropertyName("items")]
@@ -12,7 +11,6 @@ namespace Dio.Series.Classes
         [JsonPropertyName("errorMessage")]
         public string ErrorMessage { get; set; }
     }
-
     public partial class Item
     {
         [JsonPropertyName("id")]
