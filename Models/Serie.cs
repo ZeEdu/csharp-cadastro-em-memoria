@@ -28,7 +28,7 @@ namespace DIO.Series.Models
 		public override string ToString()
 		{
 			string retorno = "";
-			retorno += "Gênero: " + Id + Environment.NewLine;
+			retorno += "Id: " + Id + Environment.NewLine;
 			retorno += "Título: " + Title + Environment.NewLine;
 			retorno += "Título Completo : " + FullTitle + Environment.NewLine;
 			retorno += "Ano: " + Year;
