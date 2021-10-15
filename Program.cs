@@ -1,91 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Dio.Series.Classes;
 using DIO.Series.Classes;
-
+using DIO.Series.Models;
 
 namespace DIO.Series
 {
 	class Program
 	{
-		static readonly MovieRepo movieRepo = new();
-		static readonly HttpClient httpClient = new();
+		static readonly SerieRepo serieRepo = new();
+		static void Main(string[] args)
+		{
+			string opcaoUsuario = ObterOpcaoUsuario();
 
-		// static SerieRepositorio repositorio = new SerieRepositorio();
-		static async Task Main(string[] args)
-        {
-            await LoadMovies();
-
-            string opcaoUsuario = ObterOpcaoUsuario();
-
-
-            while (opcaoUsuario.ToUpper() != "X")
-            {
-                switch (opcaoUsuario)
-                {
-                    case "1":
-                        ListarFilmes();
-                        break;
-                    case "2":
-                        InserirFilme();
-                        break;
-                    case "3":
-                        AtualizarFilme();
-                        break;
-                    case "4":
-                        ExcluirFilme();
-                        break;
-                    case "5":
-                        VisualizarFilme();
-                        break;
-                    case "C":
-                        Console.Clear();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                opcaoUsuario = ObterOpcaoUsuario();
-            }
-            Console.WriteLine("Obrigado por utilizar nossos serviços");
-        }
-
-        private static async Task LoadMovies()
-        {
-            try
-            {
-                var responseStream = httpClient.GetStreamAsync("https://imdb-api.com/en/API/MostPopularMovies/k_f1wugarq");
-                var movies = await JsonSerializer.DeserializeAsync<GetMovies>(await responseStream);
-
-                foreach (var movie in movies.Items)
-                {
-					Movie newMovie = new(id: movie.Id, title: movie.Title, fullTitle: movie.FullTitle, year: movie.Year, crew: movie.Crew);
-					movieRepo.Insert(newMovie);
-                }
-
+			while (opcaoUsuario.ToUpper() != "X")
+			{
+				switch (opcaoUsuario)
+				{
+					case "1":
+						ListarFilmes();
+						break;
+					case "2":
+						InserirFilme();
+						break;
+					case "3":
+						AtualizarFilme();
+						break;
+					case "4":
+						ExcluirFilme();
+						break;
+					case "5":
+						VisualizarFilme();
+						break;
+					case "C":
+						Console.Clear();
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+				opcaoUsuario = ObterOpcaoUsuario();
 			}
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-				Console.WriteLine("Message: {0}", e.Message);
-            }
-        }
+			Console.WriteLine("Obrigado por utilizar nossos serviços");
+		}
 
-        private static void VisualizarFilme()
+		private static void VisualizarFilme()
 		{
 			System.Console.WriteLine("Digite o id do filme: ");
 			string indiceSerie = Console.ReadLine().ToLower();
-			Movie movie = movieRepo.ReturnById(indiceSerie);
-			System.Console.WriteLine(movie);
+			var serie = serieRepo.ReturnById(indiceSerie);
+			System.Console.WriteLine(serie);
 		}
 
 		private static void ExcluirFilme()
 		{
 			System.Console.WriteLine("Digite o id da filme: ");
 			string movieId = Console.ReadLine();
-			movieRepo.Delete(movieId);
+			serieRepo.Delete(movieId);
 		}
 
 		private static void AtualizarFilme()
@@ -105,18 +73,15 @@ namespace DIO.Series
 			System.Console.WriteLine("Digite a equipe do filme");
 			string inputCrew = Console.ReadLine();
 
-			Movie updatedMovie = new(id: movieId, 
-				title: inputTitle, 
-				fullTitle: inputFullTitle, 
-				year: inputYear, 
-				crew: inputCrew);
-			movieRepo.Update(movieId, updatedMovie);
+			Serie updatedMovie = new(id: movieId, title: inputTitle, fullTitle: inputFullTitle, year: inputYear, crew: inputCrew);
+
+			serieRepo.Update(movieId, updatedMovie);
 		}
 
 		private static void ListarFilmes()
 		{
 			System.Console.WriteLine("Listar Filmes");
-			var lista = movieRepo.ListMovies();
+			var lista = serieRepo.ListMovies();
 
 			if (lista.Count == 0)
 			{
@@ -133,23 +98,26 @@ namespace DIO.Series
 
 		private static void InserirFilme()
 		{
-			System.Console.WriteLine("Inserir nova série");
+			System.Console.WriteLine("Digite o id da serie: ");
+			string serieId = Console.ReadLine();
 
-			System.Console.WriteLine("Digite o título da série: ");
-			string inputTitle = Console.ReadLine();
+			System.Console.WriteLine("Digite o nome da serie: ");
+			string serieTitle = Console.ReadLine();
 
-			System.Console.WriteLine("Digite o título completo da série: ");
-			string inputFullTitle = Console.ReadLine();
+			System.Console.WriteLine("Digite o titulo completo da série: ");
+			string serieFullTitle = Console.ReadLine();
 
-			System.Console.WriteLine("Digite o ano do filme");
-			string inputYear = Console.ReadLine();
+			System.Console.WriteLine("Digite o ano da série: ");
+			string serieYear = Console.ReadLine();
 
-			System.Console.WriteLine("Digite a equipe do filme");
-			string inputCrew = Console.ReadLine();
+			System.Console.WriteLine("Digite o elenco da serie: ");
+			string serieCrew = Console.ReadLine();
 
+			Serie newSerie = new(id: serieId, title: serieTitle, fullTitle: serieFullTitle, year: serieYear, crew: serieCrew);
 
-			Movie newMovie = new(id: Helper.RandomString(8), title: inputTitle, fullTitle: inputFullTitle, year: inputYear,crew: inputCrew);
-			movieRepo.Insert(newMovie);
+			serieRepo.Insert(newSerie);
+
+			Console.WriteLine("Serie inserida com sucesso");
 		}
 
 		private static string ObterOpcaoUsuario()
@@ -159,7 +127,6 @@ namespace DIO.Series
 			System.Console.WriteLine("Informe a opção desejada");
 			System.Console.WriteLine("1 - Listar filmes");
 			System.Console.WriteLine("2 - Inserir novo filme");
-			System.Console.WriteLine("3 - Atualizar filme");
 			System.Console.WriteLine("4 - Excluir filme");
 			System.Console.WriteLine("5 - Visualizar filme");
 			System.Console.WriteLine("C - Limpar Tela");

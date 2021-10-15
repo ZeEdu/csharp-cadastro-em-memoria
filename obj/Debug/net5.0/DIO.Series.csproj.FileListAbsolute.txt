@@ -14,3 +14,5 @@ C:\Users\Eduar\Projetos\DIO.Series\obj\Debug\net5.0\DIO.Series.dll
 C:\Users\Eduar\Projetos\DIO.Series\obj\Debug\net5.0\ref\DIO.Series.dll
 C:\Users\Eduar\Projetos\DIO.Series\obj\Debug\net5.0\DIO.Series.pdb
 C:\Users\Eduar\Projetos\DIO.Series\obj\Debug\net5.0\DIO.Series.genruntimeconfig.cache
+C:\Users\Eduar\Projetos\DIO.Series\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Users\Eduar\Projetos\DIO.Series\obj\Debug\net5.0\DIO.Series.csproj.CopyComplete
